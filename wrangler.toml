@@ -1,9 +1,9 @@
-# Configurazione Cloudflare Pages per MieliAmo
-name = "mieliamo"
+# Configurazione Cloudflare Pages per MieliAmo (progetto "mieliamo-boneggio": "mieliamo" è già usato dal portale mieliamo.com)
+name = "mieliamo-boneggio"
 pages_build_output_dir = "."
 compatibility_date = "2026-10-01"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "mieliamo"
-database_id = "DA-COMPILARE-dopo-aver-creato-il-database-D1"
+database_name = "mieliamo-boneggio"
+database_id = "d40f1b9c-f0d5-4f13-8856-10ed88519a8b"
