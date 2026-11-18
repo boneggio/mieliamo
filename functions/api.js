@@ -523,8 +523,12 @@ async function addLoad_(db, d, u) {
   const s = await settings_(db), f = s.formati.find(x => x.id === String(d.fmt || ''));
   if (!f) return json({ ok: false, error: 'Scegli il tipo di miele e il vasetto' });
   const n = parseInt(d.n, 10) || 0;
-  if (!n || (n < 0 && u.ruolo !== 'master')) return json({ ok: false, error: 'Numero di vasetti non valido' });
+  if (!n) return json({ ok: false, error: 'Numero di vasetti non valido' });
   if (Math.abs(n) > 5000) return json({ ok: false, error: 'Numero troppo grande' });
+  if (n < 0 && u.ruolo !== 'master') {   // gli aiutanti possono togliere vasetti, ma non più di quelli disponibili
+    const l = Math.max(0, (await stock_(db)).by[f.id] || 0);
+    if (-n > l) return json({ ok: false, error: l ? `Di ${f.mn} da ${gTxt(f.g)} ce ne sono solo ${vs(l)}: non puoi toglierne ${-n}` : `Di ${f.mn} da ${gTxt(f.g)} non ci sono vasetti da togliere` });
+  }
   const data = isDate(d.data) ? d.data : today_(), note = clean(d.note, 200);
   await db.prepare('INSERT INTO loads (id, data, fmt, miele, g, n, utente, note, ins) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
     .bind(newId('c'), data, f.id, f.mn, f.g, n, u.nome, note, now_()).run();
