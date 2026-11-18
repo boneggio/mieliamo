@@ -82,6 +82,7 @@ input:focus,textarea:focus{outline:3px solid var(--yolk);outline-offset:1px;bord
 .price{font-weight:800;color:var(--brand);font-size:1.15rem;line-height:1}
 .each{color:var(--muted);font-size:.78rem;margin-top:-2px}
 .few{font-size:.76rem;font-weight:800;color:var(--err)}
+.disp{font-size:.8rem;font-weight:700;color:var(--muted)}.egg .disp b{font:inherit;font-weight:800;color:var(--brand)}.disp.low,.egg .disp.low b{color:var(--err)}
 .step{display:flex;align-items:center;gap:8px;margin-top:4px}
 @media (max-width:370px){.step{gap:4px}.step button{width:44px;height:44px}}
 .step button{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);color:var(--brand);font-size:1.4rem;line-height:1;cursor:pointer}
@@ -235,7 +236,7 @@ function drawF(){
         <b>Vasetto da ${gTxt(f.g)}</b>
         <span class="price">${eur(f.prezzo)}</span>
         <small class="each">${eur(f.prezzo / f.g * 1000)} al kg</small>
-        ${f.disp > 0 ? `<small class="few" id="w_${esc(f.id)}"></small>
+        ${f.disp > 0 ? `<small class="disp" id="w_${esc(f.id)}"></small>
         <div class="step">
           <button type="button" data-k="${esc(f.id)}" data-d="-1" aria-label="Un ${esc(nm)} in meno">−</button>
           <output id="o_${esc(f.id)}">${q[f.id] || 0}</output>
@@ -254,7 +255,7 @@ $('fmts').addEventListener('click', e => {
 function render(){
   F.forEach(f => { const o = $('o_' + f.id), e = $('e_' + f.id), w = $('w_' + f.id), n = q[f.id] || 0;
     if (o) o.textContent = n; if (e) e.classList.toggle('on', n > 0);
-    if (w) w.textContent = f.disp <= 3 ? (f.disp === 1 ? "È l'ultimo!" : `Ne restano ${f.disp}`) : ''; });
+    if (w) { w.innerHTML = `Disponibili: <b>${f.disp}</b>${f.disp === 1 ? ' – è l’ultimo!' : ''}`; w.classList.toggle('low', f.disp <= 3); } });
   $('tot').textContent = eur(euro());
   const n = cnt(); $('totN').textContent = vs(n) + (n ? ' · ' + gTxt(grams()) : '');
   document.querySelectorAll('#fmts .step button[data-d="1"]').forEach(b => { const f = F.find(x => x.id === b.dataset.k); b.disabled = !f || (q[f.id] || 0) >= Math.min(50, f.disp); });
